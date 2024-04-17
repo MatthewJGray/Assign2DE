@@ -1,0 +1,24 @@
+{
+	"name": "VGSales",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "A2DataLake",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "VGSales.csv",
+				"folderPath": "bronze",
+				"fileSystem": "a2data"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
