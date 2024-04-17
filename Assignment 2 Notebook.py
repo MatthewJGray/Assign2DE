@@ -83,4 +83,38 @@ VGSales.write.mode("overwrite").option("header","true").csv("/mnt/a2data/silver/
 
 # COMMAND ----------
 
+# DBTITLE 1,fix error - double
+
+VGSales = VGSales.withColumn("NA_Sales", col("NA_Sales").cast(DoubleType()))
+VGSales = VGSales.withColumn("EU_Sales", col("EU_Sales").cast(DoubleType()))
+VGSales = VGSales.withColumn("JP_Sales", col("JP_Sales").cast(DoubleType()))
+VGSales = VGSales.withColumn("Other_Sales", col("Other_Sales").cast(DoubleType()))
+VGSales = VGSales.withColumn("Global_Sales", col("Global_Sales").cast(DoubleType()))
+
+# COMMAND ----------
+
+# DBTITLE 1,Overwrite
+VGSales.write.mode("overwrite").option("header","true").csv("/mnt/a2data/silver/GameSales")
+
+# COMMAND ----------
+
+# DBTITLE 1,data frame
+VGSales_df = spark.read.csv("/mnt/a2data/silver/GameSales", header=True)
+
+# COMMAND ----------
+
+VGSales_df.show()
+
+# COMMAND ----------
+
+import pandas as pd
+
+# COMMAND ----------
+
+genre_counts = VGSales_df.groupBy('Genre').count().withColumnRenamed('count', 'Count')
+
+genre_counts.show()
+
+# COMMAND ----------
+
 
