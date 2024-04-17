@@ -1,0 +1,12 @@
+{
+	"name": "DataHTTP",
+	"properties": {
+		"annotations": [],
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "https://www.kaggle.com/datasets/gregorut/videogamesales/data",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
