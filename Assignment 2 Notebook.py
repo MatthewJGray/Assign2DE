@@ -111,10 +111,50 @@ import pandas as pd
 
 # COMMAND ----------
 
+# DBTITLE 1,Load as dataframe
+
+VGSales_df = spark.read.format("csv") \
+                  .option("header", "true") \
+                  .option("inferSchema", "true") \
+                  .load("/mnt/a2data/silver/GameSales")
+
+
+VGSales_df.createOrReplaceTempView("temp_table")
+
+
+# COMMAND ----------
+
+# DBTITLE 1,Genre Query
 genre_counts = VGSales_df.groupBy('Genre').count().withColumnRenamed('count', 'Count')
 
 genre_counts.show()
 
 # COMMAND ----------
 
+# DBTITLE 1,Plotly
+import plotly.express as px
+
+
+# COMMAND ----------
+
+# DBTITLE 1,Pandas DF
+pandas_df = genre_counts.toPandas()
+
+# COMMAND ----------
+
+# DBTITLE 1,Genre Chart
+
+genre_counts_df = VGSales_df.groupBy('Genre').count().withColumnRenamed('count', 'Count')
+
+genre_counts_pandas = genre_counts_df.toPandas()
+
+print(genre_counts_pandas)
+
+fig = px.bar(genre_counts_pandas, x="Genre", y="Count")
+fig.update_layout(width=900, height=600)
+fig.show()
+
+# COMMAND ----------
+
+# DBTITLE 1,Sales Per Platform
 
