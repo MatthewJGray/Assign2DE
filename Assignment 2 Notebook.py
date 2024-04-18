@@ -157,4 +157,63 @@ fig.show()
 # COMMAND ----------
 
 # DBTITLE 1,Sales Per Platform
+from pyspark.sql.functions import sum as spark_sum
 
+platform_counts_df = VGSales_df.groupby('Platform').agg(spark_sum('Global_Sales'))
+
+platform_counts_pandas = platform_counts_df.toPandas()
+
+print(platform_counts_pandas)
+
+fig = px.bar(platform_counts_pandas, x="Platform", y="sum(Global_Sales)",labels={"sum(Global_Sales)": "Global Sales"})
+fig.update_layout(width=900, height=600)
+fig.show()
+
+# COMMAND ----------
+
+# DBTITLE 1,Top 100 - year of release
+import plotly.express as px
+
+top_100_ranks_df = VGSales_df.filter(VGSales_df['Rank'] <= 100)
+
+top_100_ranks_df = top_100_ranks_df.withColumn("Year", top_100_ranks_df["Year"].cast("int"))
+
+top_100_ranks_df = top_100_ranks_df.sort("Year")
+
+top_100_ranks_pandas = top_100_ranks_df.toPandas()
+
+fig = px.scatter(top_100_ranks_pandas, x="Year", y="Rank", labels={"Rank": "Top 100 Ranks"})
+fig.update_layout(width=900, height=600)
+fig.show()
+
+# COMMAND ----------
+
+# DBTITLE 1,Average sales per genre
+from pyspark.sql.functions import avg as spark_avg
+
+genre_avg_sales_df = VGSales_df.groupby('Genre').agg(spark_avg('Global_Sales').alias('Average_Global_Sales'))
+
+genre_avg_sales_pandas = genre_avg_sales_df.toPandas()
+
+print(genre_avg_sales_pandas)
+
+fig = px.bar(genre_avg_sales_pandas, x="Genre", y="Average_Global_Sales", labels={"Average_Global_Sales": "Average Global Sales (Million)"})
+fig.update_layout(width=900, height=600)
+fig.show()
+
+# COMMAND ----------
+
+# DBTITLE 1,Sales Per Year
+from pyspark.sql.functions import sum as spark_sum
+import plotly.express as px
+
+yearly_sales_df = VGSales_df.groupby('Year').agg(spark_sum('Global_Sales').alias('Total_Sales'))
+yearly_sales_df = yearly_sales_df.orderBy('Year')
+
+yearly_sales_pandas = yearly_sales_df.toPandas()
+
+print(yearly_sales_pandas)
+
+fig = px.line(yearly_sales_pandas, x="Year", y="Total_Sales", labels={"Total_Sales": "Total Sales (Million)"})
+fig.update_layout(width=900, height=600)
+fig.show()
